@@ -1,6 +1,7 @@
 package com.lvat.SpringSecurityTest.service;
 
 import com.lvat.SpringSecurityTest.entity.Authority;
+import com.lvat.SpringSecurityTest.entity.AuthorityUser;
 import com.lvat.SpringSecurityTest.entity.User;
 import com.lvat.SpringSecurityTest.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,11 +24,15 @@ public class UserDetailsServiceImp implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String s) throws UsernameNotFoundException {
         User user = userRepository.findByUsername(s, User.class);
-        List<Authority> authorities = user.getAuthorities();
+        List<AuthorityUser> authorityUserList = user.getAuthorityUserList();
         List<GrantedAuthority> grantedAuthorities = new LinkedList<>();
-        for (Authority authority : authorities) {
-            grantedAuthorities.add(new SimpleGrantedAuthority(authority.getAuthorityName()));
+        for (AuthorityUser authorityUser : authorityUserList) {
+            grantedAuthorities.add(new SimpleGrantedAuthority(authorityUser.getAuthority().getAuthorityName()));
+        }
+        for (GrantedAuthority grantedAuthority : grantedAuthorities) {
+            System.out.println(grantedAuthority.getAuthority());
         }
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), grantedAuthorities);
     }
+
 }

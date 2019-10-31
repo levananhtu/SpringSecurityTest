@@ -1,13 +1,16 @@
 package com.lvat.SpringSecurityTest.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "Authority")
 @Table(name = "authority")
-public class Authority {
+public class Authority implements Serializable {
     @Id
-    @Column(name = "id")
+    @Column(name = "authority_id")
     @GeneratedValue
     private Long id;
 
@@ -20,15 +23,19 @@ public class Authority {
 //            joinColumns = @JoinColumn(name = "id", referencedColumnName = "authority_id"))
 //    private List<User> users;
 
-    @OneToMany(targetEntity = AuthorityUser.class)
-    @JoinColumn(referencedColumnName = "authority_id", name = "id", insertable = false, updatable = false)
-    List<AuthorityUser> authorityUserList;
+    @OneToMany
+    @JoinColumn(referencedColumnName = "authority_id", name = "authority_id")//, insertable = false, updatable = false)
+    private List<AuthorityUser> authorityUserList;
 
     public Authority() {
     }
 
     public Authority(Long id, String authorityName) {
         this.id = id;
+        this.authorityName = authorityName;
+    }
+
+    public Authority(String authorityName) {
         this.authorityName = authorityName;
     }
 
@@ -48,6 +55,7 @@ public class Authority {
         this.authorityName = authorityName;
     }
 
+    @JsonIgnore
     public List<AuthorityUser> getAuthorityUserList() {
         return authorityUserList;
     }

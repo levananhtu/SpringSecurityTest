@@ -17,8 +17,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     private String[] resources = {"/include/**", "/css/**", "/icon/**", "/img/**", "/js/**", "/layer/**"};
-    private GrantedAuthority userAuthority = new SimpleGrantedAuthority("USER");
-    private GrantedAuthority adminAuthority = new SimpleGrantedAuthority("ADMIN");
+    private GrantedAuthority userAuthority = new SimpleGrantedAuthority("ROLE_USER");
+    private GrantedAuthority adminAuthority = new SimpleGrantedAuthority("ROLE_ADMIN");
 
     private PasswordEncoder passwordEncoder;
 
@@ -32,7 +32,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests().antMatchers("/user/**").hasAnyAuthority(userAuthority.getAuthority(), adminAuthority.getAuthority());
 //        http.authorizeRequests().antMatchers("/login").not().hasAnyAuthority(userAuthority.getAuthority(), adminAuthority.getAuthority());
 //        http.authorizeRequests().antMatchers("/logout").hasAnyAuthority(userAuthority.getAuthority(), adminAuthority.getAuthority());
-
         http.formLogin().loginPage("/login")
                 .usernameParameter("username")
                 .passwordParameter("password")
@@ -53,5 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder builder) throws Exception {
         builder.userDetailsService(userDetailsServiceImp).passwordEncoder(passwordEncoder());
+        System.out.println("hello sucker");
+//        System.out.println(userDetailsServiceImp.getAuthorityByUsername("admin"));
     }
 }
